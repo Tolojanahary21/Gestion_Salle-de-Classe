@@ -6,12 +6,20 @@ import com.example.GestionSalleDeClasse.service.OccuperService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import java.time.LocalDate;
 import java.util.List;
-
+@Controller
 @RestController
 @RequestMapping("/api/occuper")
 public class OccuperController {
+        // Route vers prof
+     @GetMapping("/occupation")
+    public String occupations() {
+        return "occupation/index";
+    }
 
     private final OccuperService occuperService;
 

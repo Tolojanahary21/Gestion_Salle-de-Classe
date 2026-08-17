@@ -5,12 +5,18 @@ import com.example.GestionSalleDeClasse.service.ProfService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.stereotype.Controller;
 import java.util.List;
 
+@Controller
 @RestController
 @RequestMapping("/api/profs")
 public class ProfController {
+    // Route vers prof
+     @GetMapping("/professeur")
+    public String professeur() {
+        return "professeur/index";
+    }
 
     private final ProfService profService;
 

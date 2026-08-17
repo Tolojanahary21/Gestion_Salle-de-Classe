@@ -5,12 +5,18 @@ import com.example.GestionSalleDeClasse.service.SalleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
-
+@Controller
 @RestController
 @RequestMapping("/api/salles")
 public class SalleController {
+    // Route vers salle
+     @GetMapping("/salle")
+    public String salle() {
+        return "salle/index";
+    }
 
     private final SalleService salleService;
 
