@@ -2,6 +2,8 @@ package com.example.GestionSalleDeClasse.service;
 
 import com.example.GestionSalleDeClasse.model.Prof;
 import com.example.GestionSalleDeClasse.repository.ProfRepository;
+
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,5 +60,10 @@ public class ProfService {
         }
 
         profRepository.deleteById(codeProf);
+    }
+
+    public @Nullable Object getTousLesProfs() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getTousLesProfs'");
     }
 }
