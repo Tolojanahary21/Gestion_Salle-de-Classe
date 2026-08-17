@@ -40,30 +40,15 @@ public class DashboardController {
 
     @GetMapping("/")
     public String dashboard(Model model) {
-
-        // =========================================================
-        // 1. RECUPERATION DES DONNEES REELLES
-        // =========================================================
-
+ 
         List<Prof> professeurs = profService.getAllProf();
         List<Salle> salles = salleService.getAllSalles();
         List<Occuper> occupations = occuperService.getTousLesOccuper();
-
-        // =========================================================
-        // 2. STATISTIQUES
-        // =========================================================
-
+ 
         long totalProfesseurs = professeurs.size();
         long totalSalles = salles.size();
         long totalOccupations = occupations.size();
-
         LocalDate aujourdHui = LocalDate.now();
-
-        /*
-         * Une salle est considérée comme occupée aujourd'hui
-         * lorsqu'elle possède une occupation dont la date correspond
-         * à la date actuelle.
-         */
         long sallesOccupees = occupations.stream()
                 .filter(occupation ->
                         aujourdHui.equals(occupation.getDate())
@@ -76,11 +61,8 @@ public class DashboardController {
                 totalSalles - sallesOccupees,
                 0
         );
-
-        // =========================================================
-        // 3. FORMATAGE DE LA DATE DU HEADER
-        // =========================================================
-
+// FORMATAGE DE LA DATE DU HEADER
+ 
         DateTimeFormatter dateFormatter =
                 DateTimeFormatter.ofPattern(
                         "dd MMMM yyyy",
@@ -89,11 +71,7 @@ public class DashboardController {
 
         String dateAffichee =
                 aujourdHui.format(dateFormatter);
-
-        // =========================================================
-        // 4. MAPS POUR RETROUVER PROFESSEURS ET SALLES
-        // =========================================================
-
+        // MAPS POUR RETROUVER PROFESSEURS ET SALLES
         Map<String, Prof> professeursParCode =
                 professeurs.stream()
                         .collect(Collectors.toMap(
@@ -107,15 +85,7 @@ public class DashboardController {
                                 Salle::getCodeSalle,
                                 salle -> salle
                         ));
-
-        // =========================================================
-        // 5. OCCUPATIONS RECENTES
-        // =========================================================
-
-        /*
-         * On trie les occupations par date décroissante
-         * afin d'afficher les plus récentes en premier.
-         */
+        //OCCUPATIONS RECENTES
         List<Occuper> occupationsTriees =
                 occupations.stream()
                         .sorted(
@@ -234,14 +204,6 @@ public class DashboardController {
 
             occupationsRecentes.add(ligne);
         }
-
-        // =========================================================
-        // 6. ETAT DES SALLES
-        // =========================================================
-
-        /*
-         * On récupère les codes des salles occupées aujourd'hui.
-         */
         List<String> codesSallesOccupeesAujourdHui =
                 occupations.stream()
                         .filter(occupation ->
@@ -252,10 +214,6 @@ public class DashboardController {
                         .map(Occuper::getCodeSalle)
                         .distinct()
                         .toList();
-
-        /*
-         * Liste destinée à la JSP.
-         */
         List<Map<String, Object>> etatSalles =
                 new ArrayList<>();
 
@@ -294,11 +252,6 @@ public class DashboardController {
 
             etatSalles.add(ligne);
         }
-
-        // =========================================================
-        // 7. DONNEES ENVOYEES A LA JSP
-        // =========================================================
-
         model.addAttribute(
                 "totalProfesseurs",
                 totalProfesseurs
