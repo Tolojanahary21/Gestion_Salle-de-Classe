@@ -1,14 +1,138 @@
-.nav-item.active {
-    background: #2563eb;
-    color: #ffffff;
-    font-weight: 600;
+* {
+    box-sizing: border-box;
+}
 
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 250px;
+    height: 100vh;
+
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 24px 16px;
+
+    box-shadow: 1px 0 3px rgba(0, 0, 0, 0.02);
+}
+
+/* =========================
+   HEADER
+   ========================= */
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 0 10px 20px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.logo-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: white;
+
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+}
+
+.logo-icon svg {
+    width: 23px;
+    height: 23px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+
+    line-height: 1.1;
+}
+
+.logo-text span {
+    font-size: 13px;
+    color: #6b7280;
+}
+
+.logo-text strong {
+    font-size: 18px;
+    color: #111827;
+    letter-spacing: -0.01em;
+}
+
+/* =========================
+   NAVIGATION
+   ========================= */
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    margin-top: 12px;
+}
+
+.nav-item {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 11px 14px;
+
+    border-radius: 10px;
+
+    color: #6b7280;
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.nav-item svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2;
+    flex-shrink: 0;
+    transition: stroke-width 0.18s ease;
+}
+
+.nav-item:hover {
+    background: #f3f4f6;
+    color: #111827;
+    transform: translateX(2px);
+}
+
+.nav-item:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+.nav-item.active {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
 }
 
 .nav-item.active svg {
     stroke-width: 2.3;
-    color: #ffffff;
 }
 
 .nav-item.active::before {
@@ -22,10 +146,5 @@
     height: 18px;
 
     border-radius: 0 3px 3px 0;
-    background: #1d4ed8;
-}
-
-.nav-item.active:hover {
-    background: #1d4ed8;
-    transform: none;
+    background: #2563eb;
 }
