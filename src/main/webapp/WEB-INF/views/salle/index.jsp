@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Salles</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/sidebar.css">
+        <title>Salle</title>
 </head>
 <body>
+    <%@ include file="../layouts/sidebar.jsp"%>
+    <h1>Hello Salle</h1>
 
-    <h1>HelloSalles</h1>
 
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
