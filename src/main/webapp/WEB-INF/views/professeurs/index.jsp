@@ -35,12 +35,20 @@
 
         <section class="panel">
             <div class="panel-header">
-                <div>
-                    <h2>Liste des professeurs</h2>
-                    <div class="panel-subtitle">Tous les professeurs enregistrés dans le système</div>
-                </div>
-                <i data-lucide="graduation-cap" style="width:18px;height:18px;color:#9ca3af;"></i>
-            </div>
+    <div>
+        <h2>Liste des professeurs</h2>
+        <div class="panel-subtitle">Tous les professeurs enregistrés dans le système</div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:8px; padding:8px 12px; min-width:260px; border:1px solid #e5e7eb; border-radius:8px; background:#ffffff;">
+        <i data-lucide="search" style="width:16px; height:16px; color:#9ca3af; flex-shrink:0;"></i>
+        <input type="text"
+               id="rechercheProfesseur"
+               placeholder="Rechercher par code ou nom..."
+               autocomplete="off"
+               style="flex:1; border:none; outline:none; background:transparent; font-size:13.5px; font-family:inherit; color:#111827;">
+    </div>
+</div>
 
             <div class="panel-body">
                 <table class="data-table">
@@ -303,12 +311,76 @@
         }
 
         document.getElementById("btnOpenCreate").addEventListener("click", ouvrirModalAjout);
+// ================================================================
+// ===== RECHERCHE DYNAMIQUE (par code ou nom/prénom) =====
+// ================================================================
 
-        modal.addEventListener("click", function (event) {
-            if (event.target === modal) {
-                fermerModal();
-            }
-        });
+                const inputRecherche = document.getElementById("rechercheProfesseur");
+                const lignesProfesseurs = Array.from(
+                    tableBody.querySelectorAll("tr[data-code-prof]")
+                );
+
+                function normaliser(texte) {
+                    return (texte || "")
+                        .toString()
+                        .normalize("NFD")
+                        .replace(/[\u0300-\u036f]/g, "") // retire les accents
+                        .toLowerCase()
+                        .trim();
+                }
+
+                function filtrerProfesseurs() {
+                    const terme = normaliser(inputRecherche.value);
+                    let resultatsVisibles = 0;
+
+                    lignesProfesseurs.forEach(function (ligne) {
+                        const code = normaliser(ligne.dataset.codeProf);
+                        const nom = normaliser(ligne.children[1].textContent);
+                        const prenom = normaliser(ligne.children[2].textContent);
+
+                        const correspond =
+                            !terme ||
+                            code.includes(terme) ||
+                            nom.includes(terme) ||
+                            prenom.includes(terme);
+
+                        ligne.style.display = correspond ? "" : "none";
+
+                        if (correspond) {
+                            resultatsVisibles++;
+                        }
+                    });
+
+                    let ligneAucunResultat = tableBody.querySelector(".empty-row-recherche");
+
+                    if (resultatsVisibles === 0 && lignesProfesseurs.length > 0) {
+                        if (!ligneAucunResultat) {
+                            ligneAucunResultat = document.createElement("tr");
+                            ligneAucunResultat.className = "empty-row empty-row-recherche";
+
+                            const cellule = document.createElement("td");
+                            cellule.colSpan = 5;
+                            cellule.style.textAlign = "center";
+                            cellule.style.padding = "30px";
+                            cellule.style.color = "#9ca3af";
+                            cellule.textContent = "Aucun professeur ne correspond à la recherche.";
+
+                            ligneAucunResultat.appendChild(cellule);
+                            tableBody.appendChild(ligneAucunResultat);
+                        }
+                    } else if (ligneAucunResultat) {
+                        ligneAucunResultat.remove();
+                    }
+                }
+
+                if (inputRecherche) {
+                    inputRecherche.addEventListener("input", filtrerProfesseurs);
+                }
+        // modal.addEventListener("click", function (event) {
+        //     if (event.target === modal) {
+        //         fermerModal();
+        //     }
+        // });
 
         lucide.createIcons();
     </script>

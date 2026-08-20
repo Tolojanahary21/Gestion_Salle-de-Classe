@@ -283,11 +283,11 @@
 
         document.getElementById("btnOpenCreate").addEventListener("click", ouvrirModalAjout);
 
-        modal.addEventListener("click", function (event) {
-            if (event.target === modal) {
-                fermerModal();
-            }
-        });
+        // modal.addEventListener("click", function (event) {
+        //     if (event.target === modal) {
+        //         fermerModal();
+        //     }
+        // });
 
         lucide.createIcons();
     </script>
