@@ -100,23 +100,23 @@
 
     </main>
 
-    <%-- ===== MODAL AJOUT / MODIFICATION ===== --%>
-    <div class="modal-overlay" id="modalOccupation">
+    <%-- ===== MODAL AJOUT ===== --%>
+    <div class="modal-overlay" id="modalAjoutOccupation">
         <div class="modal-box">
             <div class="modal-header">
-                <h2 id="modalTitle">Nouvelle occupation</h2>
-                <button type="button" class="modal-close" onclick="fermerModal()">
+                <h2>Nouvelle occupation</h2>
+                <button type="button" class="modal-close" onclick="fermerModalAjout()">
                     <i data-lucide="x"></i>
                 </button>
             </div>
 
-            <form id="formOccupation">
+            <form id="formAjoutOccupation">
                 <div class="modal-body">
-                    <div class="form-error" id="formError"></div>
+                    <div class="form-error" id="formErrorAjout"></div>
 
                     <div class="form-group">
-                        <label for="codeProf">Professeur</label>
-                        <select id="codeProf" name="codeProf" required>
+                        <label for="ajoutCodeProf">Professeur</label>
+                        <select id="ajoutCodeProf" name="codeProf" required>
                             <option value="">-- Sélectionner un professeur --</option>
                             <c:forEach var="prof" items="${professeurs}">
                                 <option value="${prof.codeProf}">
@@ -127,8 +127,8 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="codeSalle">Salle</label>
-                        <select id="codeSalle" name="codeSalle" required>
+                        <label for="ajoutCodeSalle">Salle</label>
+                        <select id="ajoutCodeSalle" name="codeSalle" required>
                             <option value="">-- Sélectionner une salle --</option>
                             <c:forEach var="salle" items="${salles}">
                                 <option value="${salle.codeSalle}">
@@ -139,14 +139,66 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" name="date" required>
+                        <label for="ajoutDate">Date</label>
+                        <input type="date" id="ajoutDate" name="date" required>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="fermerModal()">Annuler</button>
-                    <button type="submit" class="btn btn-primary" id="btnSubmit">Enregistrer</button>
+                    <button type="button" class="btn btn-secondary" onclick="fermerModalAjout()">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitAjout">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <%-- ===== MODAL MODIFICATION ===== --%>
+    <div class="modal-overlay" id="modalModificationOccupation">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2>Modifier l'occupation</h2>
+                <button type="button" class="modal-close" onclick="fermerModalModification()">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <form id="formModificationOccupation">
+                <div class="modal-body">
+                    <div class="form-error" id="formErrorModification"></div>
+
+                    <div class="form-group">
+                        <label for="modifCodeProf">Professeur</label>
+                        <select id="modifCodeProf" name="codeProf" disabled>
+                            <option value="">-- Sélectionner un professeur --</option>
+                            <c:forEach var="prof" items="${professeurs}">
+                                <option value="${prof.codeProf}">
+                                    ${prof.codeProf} - ${prof.nom} ${prof.prenom}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modifCodeSalle">Salle</label>
+                        <select id="modifCodeSalle" name="codeSalle" disabled>
+                            <option value="">-- Sélectionner une salle --</option>
+                            <c:forEach var="salle" items="${salles}">
+                                <option value="${salle.codeSalle}">
+                                    ${salle.codeSalle} - ${salle.designation}
+                                </option>
+                            </c:forEach>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modifDate">Date</label>
+                        <input type="date" id="modifDate" name="date" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="fermerModalModification()">Annuler</button>
+                    <button type="submit" class="btn btn-primary" id="btnSubmitModification">Enregistrer</button>
                 </div>
             </form>
         </div>
@@ -157,97 +209,61 @@
         const contextPath = "${pageContext.request.contextPath}";
         const apiUrl = contextPath + "/api/occuper";
 
-        let modeEdition = false;
-        let ancienCodeProf = null;
-        let ancienCodeSalle = null;
-        let ancienneDate = null;
-
-        const modal = document.getElementById("modalOccupation");
-        const modalTitle = document.getElementById("modalTitle");
-        const form = document.getElementById("formOccupation");
-        const formError = document.getElementById("formError");
-        const selectCodeProf = document.getElementById("codeProf");
-        const selectCodeSalle = document.getElementById("codeSalle");
-        const inputDate = document.getElementById("date");
         const tableBody = document.getElementById("tableOccupations");
 
-        // ===== Ouvrir modal en mode AJOUT =====
+        // ================================================================
+        // ===== AJOUT =====
+        // ================================================================
+
+        const modalAjout = document.getElementById("modalAjoutOccupation");
+        const formAjout = document.getElementById("formAjoutOccupation");
+        const formErrorAjout = document.getElementById("formErrorAjout");
+        const ajoutCodeProf = document.getElementById("ajoutCodeProf");
+        const ajoutCodeSalle = document.getElementById("ajoutCodeSalle");
+        const ajoutDate = document.getElementById("ajoutDate");
+        const btnSubmitAjout = document.getElementById("btnSubmitAjout");
+
         function ouvrirModalAjout() {
-            modeEdition = false;
-            ancienCodeProf = null;
-            ancienCodeSalle = null;
-            ancienneDate = null;
-
-            modalTitle.textContent = "Nouvelle occupation";
-            form.reset();
-            selectCodeProf.disabled = false;
-            selectCodeSalle.disabled = false;
-
-            masquerErreur();
-            modal.classList.add("is-open");
+            formAjout.reset();
+            masquerErreurAjout();
+            modalAjout.classList.add("is-open");
         }
 
-        // ===== Ouvrir modal en mode MODIFICATION =====
-        function ouvrirModalModification(bouton) {
-            modeEdition = true;
-
-            ancienCodeProf = bouton.dataset.codeProf;
-            ancienCodeSalle = bouton.dataset.codeSalle;
-            ancienneDate = bouton.dataset.date;
-
-            modalTitle.textContent = "Modifier l'occupation";
-
-            selectCodeProf.value = ancienCodeProf;
-            selectCodeSalle.value = ancienCodeSalle;
-            inputDate.value = ancienneDate;
-
-            // Le professeur et la salle font partie de la clé, on ne les change pas en édition
-            selectCodeProf.disabled = true;
-            selectCodeSalle.disabled = true;
-
-            masquerErreur();
-            modal.classList.add("is-open");
+        function fermerModalAjout() {
+            modalAjout.classList.remove("is-open");
         }
 
-        // ===== Fermer modal =====
-        function fermerModal() {
-            modal.classList.remove("is-open");
+        function afficherErreurAjout(message) {
+            formErrorAjout.textContent = message;
+            formErrorAjout.classList.add("is-visible");
         }
 
-        function afficherErreur(message) {
-            formError.textContent = message;
-            formError.classList.add("is-visible");
+        function masquerErreurAjout() {
+            formErrorAjout.textContent = "";
+            formErrorAjout.classList.remove("is-visible");
         }
 
-        function masquerErreur() {
-            formError.textContent = "";
-            formError.classList.remove("is-visible");
-        }
-
-        // ===== Soumission du formulaire (Ajout ou Modification) =====
-        form.addEventListener("submit", function (event) {
+        formAjout.addEventListener("submit", function (event) {
             event.preventDefault();
+            masquerErreurAjout();
 
             const occupation = {
-                codeProf: selectCodeProf.value,
-                codeSalle: selectCodeSalle.value,
-                date: inputDate.value
+                codeProf: ajoutCodeProf.value,
+                codeSalle: ajoutCodeSalle.value,
+                date: ajoutDate.value
             };
 
             if (!occupation.codeProf || !occupation.codeSalle || !occupation.date) {
-                afficherErreur("Veuillez remplir tous les champs obligatoires.");
+                afficherErreurAjout("Veuillez remplir tous les champs obligatoires.");
                 return;
             }
 
-            if (modeEdition) {
-                modifierOccupation(occupation);
-            } else {
-                ajouterOccupation(occupation);
-            }
+            ajouterOccupation(occupation);
         });
 
-        // ===== CREATE =====
         function ajouterOccupation(occupation) {
+            btnSubmitAjout.disabled = true;
+
             fetch(apiUrl, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -255,21 +271,89 @@
             })
                 .then(function (response) {
                     if (!response.ok) {
-                        throw new Error("Erreur lors de l'ajout de l'occupation.");
+                        return extraireMessageErreur(
+                            response,
+                            "Erreur lors de l'ajout de l'occupation."
+                        ).then(function (message) {
+                            throw new Error(message);
+                        });
                     }
                     return response.json();
                 })
                 .then(function () {
-                    fermerModal();
+                    fermerModalAjout();
                     window.location.reload();
                 })
                 .catch(function (error) {
-                    afficherErreur(error.message);
+                    afficherErreurAjout(error.message);
+                })
+                .finally(function () {
+                    btnSubmitAjout.disabled = false;
                 });
         }
 
-        // ===== UPDATE =====
+        // ================================================================
+        // ===== MODIFICATION =====
+        // ================================================================
+
+        const modalModification = document.getElementById("modalModificationOccupation");
+        const formModification = document.getElementById("formModificationOccupation");
+        const formErrorModification = document.getElementById("formErrorModification");
+        const modifCodeProf = document.getElementById("modifCodeProf");
+        const modifCodeSalle = document.getElementById("modifCodeSalle");
+        const modifDate = document.getElementById("modifDate");
+        const btnSubmitModification = document.getElementById("btnSubmitModification");
+
+        let ancienCodeProf = null;
+        let ancienCodeSalle = null;
+        let ancienneDate = null;
+
+        function ouvrirModalModification(bouton) {
+            ancienCodeProf = bouton.dataset.codeProf;
+            ancienCodeSalle = bouton.dataset.codeSalle;
+            ancienneDate = bouton.dataset.date;
+
+            modifCodeProf.value = ancienCodeProf;
+            modifCodeSalle.value = ancienCodeSalle;
+            modifDate.value = ancienneDate;
+
+            masquerErreurModification();
+            modalModification.classList.add("is-open");
+        }
+
+        function fermerModalModification() {
+            modalModification.classList.remove("is-open");
+        }
+
+        function afficherErreurModification(message) {
+            formErrorModification.textContent = message;
+            formErrorModification.classList.add("is-visible");
+        }
+
+        function masquerErreurModification() {
+            formErrorModification.textContent = "";
+            formErrorModification.classList.remove("is-visible");
+        }
+
+        formModification.addEventListener("submit", function (event) {
+            event.preventDefault();
+            masquerErreurModification();
+
+            if (!modifDate.value) {
+                afficherErreurModification("Veuillez indiquer une date.");
+                return;
+            }
+
+            modifierOccupation({
+                codeProf: ancienCodeProf,
+                codeSalle: ancienCodeSalle,
+                date: modifDate.value
+            });
+        });
+
         function modifierOccupation(occupation) {
+            btnSubmitModification.disabled = true;
+
             const url = apiUrl
                 + "/" + encodeURIComponent(ancienCodeProf)
                 + "/" + encodeURIComponent(ancienCodeSalle)
@@ -282,20 +366,31 @@
             })
                 .then(function (response) {
                     if (!response.ok) {
-                        throw new Error("Erreur lors de la modification de l'occupation.");
+                        return extraireMessageErreur(
+                            response,
+                            "Erreur lors de la modification de l'occupation."
+                        ).then(function (message) {
+                            throw new Error(message);
+                        });
                     }
                     return response.json();
                 })
                 .then(function () {
-                    fermerModal();
+                    fermerModalModification();
                     window.location.reload();
                 })
                 .catch(function (error) {
-                    afficherErreur(error.message);
+                    afficherErreurModification(error.message);
+                })
+                .finally(function () {
+                    btnSubmitModification.disabled = false;
                 });
         }
 
-        // ===== DELETE =====
+        // ================================================================
+        // ===== SUPPRESSION =====
+        // ================================================================
+
         function supprimerOccupation(codeProf, codeSalle, date) {
             const confirmation = confirm(
                 "Voulez-vous vraiment supprimer cette occupation ("
@@ -316,7 +411,12 @@
             })
                 .then(function (response) {
                     if (!response.ok) {
-                        throw new Error("Erreur lors de la suppression de l'occupation.");
+                        return extraireMessageErreur(
+                            response,
+                            "Erreur lors de la suppression de l'occupation."
+                        ).then(function (message) {
+                            throw new Error(message);
+                        });
                     }
 
                     const selecteur =
@@ -338,13 +438,48 @@
                 });
         }
 
+        // ================================================================
+        // ===== UTILITAIRE : extraction du message d'erreur du backend =====
+        // ================================================================
+
+        function extraireMessageErreur(response, messageParDefaut) {
+            return response.text().then(function (texte) {
+                if (!texte) {
+                    return messageParDefaut;
+                }
+                try {
+                    const donnees = JSON.parse(texte);
+                    return donnees.message || donnees.error || messageParDefaut;
+                } catch (e) {
+                    return messageParDefaut;
+                }
+            }).catch(function () {
+                return messageParDefaut;
+            });
+        }
+
+        // ================================================================
+        // ===== INITIALISATION =====
+        // ================================================================
+
         document.getElementById("btnOpenCreate").addEventListener("click", ouvrirModalAjout);
 
-        modal.addEventListener("click", function (event) {
-            if (event.target === modal) {
-                fermerModal();
-            }
-        });
+        // Ouverture automatique depuis le dashboard (?action=ajouter)
+        if (new URLSearchParams(window.location.search).get("action") === "ajouter") {
+            ouvrirModalAjout();
+        }
+
+        // modalAjout.addEventListener("click", function (event) {
+        //     if (event.target === modalAjout) {
+        //         fermerModalAjout();
+        //     }
+        // });
+
+        // modalModification.addEventListener("click", function (event) {
+        //     if (event.target === modalModification) {
+        //         fermerModalModification();
+        //     }
+        // });
 
         lucide.createIcons();
     </script>

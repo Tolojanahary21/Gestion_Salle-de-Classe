@@ -30,41 +30,25 @@
 
 <main class="main-content">
     <header class="dashboard-header">
-
+<!-- Titre  -->
         <div>
-
-            <h1>Dashboard</h1>
-
-            <p>
-                Vue d'ensemble de la gestion des salles de classe
-            </p>
-
+            <h1>Tableau de Bord</h1>
+            <p>Vue d'ensemble pour bien gerer les classes </p>
         </div>
-
-
-        <div class="header-date">
-
+<!-- En-tete -->
+        <div class="header-date" style="background-color: aquamarine;">
             <i data-lucide="calendar"></i>
-
-            <span>
-                ${dateAffichee}
-            </span>
+            <!-- Afficher date -->
+            <span>${dateAffichee}</span>
 
         </div>
-
     </header>
-
-
-
+<!--    Afficher les statistiques de chaque div -->
     <%--CARTES STATISTIQUES --%>
 
     <section class="stats-grid">
-
-
         <%-- PROFESSEURS --%>
-
         <div class="stat-card">
-
             <div class="stat-card-info">
 
                 <span class="stat-card-label">
@@ -517,17 +501,12 @@
          RESUME DES DISPONIBILITES
     ====================================================== --%>
 
-    <section class="panel">
-
-
-        <div class="panel-header">
-
+    <section class="panel" >
+        <div class="panel-header" >
             <div>
-
                 <h2>
                     Disponibilité des salles
                 </h2>
-
                 <div class="panel-subtitle">
                     Situation actuelle basée sur les occupations du jour
                 </div>
